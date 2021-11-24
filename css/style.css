@@ -66,11 +66,16 @@ main {
     justify-content: center;
     align-items: center;
     color: black;
+    cursor: pointer;
 }
 
 .active {
     background-color: #6495ed;
     color: white;
+}
+
+.bomb {
+    background-color: red;
 }
 /* END MAIN */
 

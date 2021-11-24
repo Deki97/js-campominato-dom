@@ -25,6 +25,7 @@ const playBtn = document.getElementById('play-button').addEventListener('click',
 
 // Griglia generata se l'utente sceglie la Option Easy dalla Select (100 numeri -> da 1 a 100)
 function startGame() {
+    const numberOfBombs = 16;
     // Seleziono dall'html il grid principale che conterrà poi tutti i quadratini
     const myGrid = document.getElementById('grid');
     myGrid.innerHTML = '';
@@ -50,20 +51,69 @@ function startGame() {
         thisSquareDimension = 7;
     }
 
+    // Genero le bombe, ossia l'array con i 16 numeri che non devono essere duplicati
+    const bombsNumber = createBombs(maxSquareNum, numberOfBombs);
+    // console.log(bombsNumber);
+
+    // Calcolo il numero massimo di tentativi dopo il quale l'utente ha vinto
+    const maxAttempts = maxSquareNum - bombsNumber.length;
+    // console.log(maxAttempts);
+
+    // Creo l'array vuoto che conterrà i numeri non bombe cliccati dall'utente
+    const rightAttemptsArray = [];
+
+
     for(let i = 1; i <= maxSquareNum; i++){
         const newGeneratedSquare = createThisSquare(i, thisSquareDimension);
 
         newGeneratedSquare.addEventListener('click', handleSquareClick);
 
         myGrid.appendChild(newGeneratedSquare);
+    }
+
+
+    // Funzione che al click del singolo box aggiunge la classe active con sfondo blu e colore del testo bianco
+    function handleSquareClick(){
+        // this.classList.add('active');
+        const clickedNumber = parseInt( this.querySelector('span').textContent );
         
+        if( bombsNumber.includes(clickedNumber) ) {
+            this.classList.add('bomb');
+            alert('Gioco finito, hai perso');
+        } else {
+            this.classList.add('active');
+            this.style.pointerEvents = "none";
+            // this.removeEventListener('click', handleSquareClick);
+
+            // In questo caso aggiungo il numero del box corrente all'arry dei numeri non bombe
+            rightAttemptsArray.push(clickedNumber);
+
+
+            if(rightAttemptsArray.length >= maxAttempts) {
+                alert('Gioco finito, hai vinto');
+            }
+        }
     }
 }
 
 
-// Funzione che al click del singolo box aggiunge la classe active con sfondo blu e colore del testo bianco
-function handleSquareClick(){
-    this.classList.add('active');
+
+
+
+// Funzione che genera l'array delle bombe, in base ad un numero massimo (range) (1->49, 1->81, 1->100)
+// Quindi avrò bisogno del range in base alla griglia e avrò bisogno del numero di bombe da generare (16), ossia di elementi nell'array
+// Questa funzione mi dovrà ritornare l'array con le bombe, ossia i numeri 'proibiti'
+function createBombs(maxRangeNumber, numberOfBombs){
+    const arrayNumber = [];
+    while(arrayNumber.length < numberOfBombs){
+        const randomNum = getRndInteger(1, maxRangeNumber);
+
+        if(!arrayNumber.includes(randomNum)) {
+            arrayNumber.push(randomNum);
+        }
+    }
+
+    return arrayNumber;
 }
 
 
@@ -78,3 +128,9 @@ function createThisSquare(squareNumber, squareDimension) {
 
     return thisSquare;
 }
+
+
+// Funzione che genera un numero random tra 2 valori max e min (inclusi)
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
