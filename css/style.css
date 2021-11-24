@@ -49,6 +49,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .game-grid {
@@ -67,6 +68,10 @@ main {
     align-items: center;
     color: black;
     cursor: pointer;
+}
+
+.hidden {
+    display: none;
 }
 
 .active {

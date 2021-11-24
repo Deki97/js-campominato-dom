@@ -28,7 +28,10 @@ function startGame() {
     const numberOfBombs = 16;
     // Seleziono dall'html il grid principale che conterrà poi tutti i quadratini
     const myGrid = document.getElementById('grid');
+
+    // Svuoto la griglia e nascondo il messaggio finale all'utente
     myGrid.innerHTML = '';
+    document.getElementById('final-message').classList.add('hidden');
 
     // Vado a prendermi la scelta dell'utente per capire che tipo di griglia devo generare, in base al valore della Select
     const levelSelected = document.getElementById('select-level').value;
@@ -79,7 +82,7 @@ function startGame() {
         
         if( bombsNumber.includes(clickedNumber) ) {
             this.classList.add('bomb');
-            alert('Gioco finito, hai perso');
+            endGame('lose');
         } else {
             this.classList.add('active');
             this.style.pointerEvents = "none";
@@ -90,8 +93,35 @@ function startGame() {
 
 
             if(rightAttemptsArray.length >= maxAttempts) {
-                alert('Gioco finito, hai vinto');
+                endGame('win');
             }
+        }
+    }
+
+    // Funzione che gestisce il finale del gioco
+    // winOrLose è una stringa, win se l'utente ha vinto, altrimenti 'lose'
+    function endGame(winOrLose) {
+        let finalMessage;
+        // Se l'utente vince mostriamo il messaggio 'Hai vinto'
+        if(winOrLose === 'win') {
+            finalMessage = 'hai vinto'
+        } else {
+            // Se l'utente perde, mostriamo il messaggio 'Hai perso',
+            // hai azzeccato + lunghezza array numeri azzeccati
+            finalMessage = 'Hai perso, hai azzeccato ' + rightAttemptsArray.length + ' tentativi';
+        }
+
+        // Mostro il messaggio finale sotto al grid
+        const finalMessageContainer = document.getElementById('final-message');
+        finalMessageContainer.innerHTML = finalMessage;
+        finalMessageContainer.classList.remove('hidden');
+
+
+        // Devo rendere le celle non più cliccabili
+        const allSquares = document.getElementsByClassName('square');
+        for(let i = 0; i < allSquares.length; i++) {
+            const thisCell = allSquares[i];
+            thisCell.style.pointerEvents = "none";
         }
     }
 }
